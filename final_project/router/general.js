@@ -22,10 +22,22 @@ public_users.get('/isbn/:isbn',function (req, res) {
   return res.status(200).json(books[isbn]);
  });
   
-// Get book details based on author
+// Get book details based on author - Task 3
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const author = req.params.author;
+  const authorBooks = [];
+
+  for (let bookID in books) {
+    if (books[bookID].author === author) {
+        authorBooks.push(books[bookID]);
+    }
+   }
+
+   if (authorBooks.length > 0) {
+    return res.status(200).json(authorBooks);
+   } else {
+    return res.status(404).json({message: "Invalid author"});
+   }
 });
 
 // Get all books based on title
