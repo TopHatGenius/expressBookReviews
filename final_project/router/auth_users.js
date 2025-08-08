@@ -73,7 +73,7 @@ regd_users.post("/login", (req,res) => {
         // Generate JWT access token
         let accessToken = jwt.sign({
             data: password
-        }, 'access', { expiresIn: 60 });
+        }, 'access', { expiresIn: 60 * 60 });
 
         // Store access token and username in session
         req.session.authorization = {
@@ -93,20 +93,20 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
     if (books[isbn]) {
         books[isbn].reviews[username] = review;
-        return res.status(200).json({message: "Review added/updated by ${username}: "});  
+        return res.status(200).json({message: "Review added/updated"});  
     } else {
         return res.status(404).json({Message: "Book not found"});
     }
 });
 
-regd_users.delete("auth/review/:isbn", (req, res) => {
+regd_users.delete("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
     const username = req.session.authorization.username;
 
     if (books[isbn]) {
         if (books[isbn].reviews[username]) {
             delete books[isbn].reviews[username];
-            return res.status(200).json({message: "Review deleted by ${username} "});
+            return res.status(200).json({message: "Review deleted"});
         } else {
             return res.status(404).json({message: "Review not found"});
         }
