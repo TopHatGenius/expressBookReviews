@@ -24,17 +24,43 @@ public_users.post("/register", (req,res) => {
     return res.status(404).json({message: "Unable to register user."});
 });
 
-// Task 1 inprog - DONE it seems
+/*/ Task 1 (Without async-await)
 public_users.get('/',function (req, res) {
     res.send(JSON.stringify(books,null,4));
+}); */
+
+// Task 10 (Task 1 using async-await)
+public_users.get('/', async function (req, res) {
+    try {
+        const getAllBooks = () => Promise.resolve(books);
+        const bookList = await getAllBooks();
+        console.log("Books got");
+        res.send(JSON.stringify(bookList, null, 4));
+    } catch (err) {
+        console.log("Error:", err);
+        return res.status(500).json({message: "Could not get books"});
+    }
 });
 
-// Get book details based on ISBN - Task 2 - DONE
+/*/ Task 2 - Get books by ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   const isbn = req.params.isbn;
   
   return res.status(200).json(books[isbn]);
- });
+ }); */
+
+ //Task 11 (Task 2 using async-await)
+ public_users.get('/isbn/:isbn', async function (req, res) {
+    try {
+        const isbn = req.params.isbn;
+        const getBookByISBN = (isbn) => Promise.resolve(books[isbn]);
+        const book = await getBookByISBN(isbn);
+        
+        return res.status(200).json(book);
+    } catch (err) {
+        return res.status(500).json({message: "Could not get book by ISBN"});
+    }
+});
   
 // Get book details based on author - Task 3
 public_users.get('/author/:author',function (req, res) {
