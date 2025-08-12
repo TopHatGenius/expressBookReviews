@@ -62,7 +62,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
     }
 });
   
-// Get book details based on author - Task 3
+/*/ Task 3 - Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   const author = req.params.author;
   const authorBooks = [];
@@ -78,9 +78,40 @@ public_users.get('/author/:author',function (req, res) {
    } else {
     return res.status(404).json({message: "Invalid author"});
    }
+}); */
+
+//Task 12 (Task 3 using async-await)
+public_users.get('/author/:author', async function (req, res) {
+    try {
+        const author = req.params.author;
+        
+        const getBooksByAuthor = (author) => {
+            return new Promise((resolve) => {
+                const authorBooks = [];
+                
+                for (let bookID in books) {
+                    if (books[bookID].author === author) {
+                        authorBooks.push(books[bookID]);
+                    }
+                }
+                
+                resolve(authorBooks);
+            });
+        };
+        
+        const authorBooks = await getBooksByAuthor(author);
+        
+        if (authorBooks.length > 0) {
+            return res.status(200).json(authorBooks);
+        } else {
+            return res.status(404).json({message: "Invalid author"});
+        }
+    } catch (err) {
+        return res.status(500).json({message: "Could not retrieve books by author"});
+    }
 });
 
-// Get all books based on title - Task 4
+/*/ Task 4 - Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   const title = req.params.title;
   const titleBooks = [];
@@ -96,6 +127,37 @@ public_users.get('/title/:title',function (req, res) {
   } else {
     return res.status(404).json({message: "Title not found"});
   }
+});*/
+
+//Task 13 (Task 4 using async-await)
+public_users.get('/title/:title', async function (req, res) {
+    try {
+        const title = req.params.title;
+        
+        const getBooksByTitle = (title) => {
+            return new Promise((resolve) => {
+                const titleBooks = [];
+                
+                for (let bookID in books) {
+                    if (books[bookID].title === title) {
+                        titleBooks.push(books[bookID]);
+                    }
+                }
+                
+                resolve(titleBooks);
+            });
+        };
+        
+        const titleBooks = await getBooksByTitle(title);
+        
+        if (titleBooks.length > 0) {
+            return res.status(200).json(titleBooks);
+        } else {
+            return res.status(404).json({message: "Title not found"});
+        }
+    } catch (err) {
+        return res.status(500).json({message: "Could not retrieve book by title"});
+    }
 });
 
 //  Get book review
